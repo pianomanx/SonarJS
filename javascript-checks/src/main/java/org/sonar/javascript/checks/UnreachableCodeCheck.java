@@ -44,7 +44,8 @@ import org.sonar.plugins.javascript.api.visitors.SubscriptionVisitorCheck;
 import org.sonarsource.analyzer.commons.annotations.DeprecatedRuleKey;
 
 @JavaScriptRule
-@Rule(key = "S1736")
+@Rule(key = "S1763")
+@DeprecatedRuleKey(ruleKey = "S1736")
 @DeprecatedRuleKey(ruleKey = "UnreachableCode")
 public class UnreachableCodeCheck extends SubscriptionVisitorCheck {
 
