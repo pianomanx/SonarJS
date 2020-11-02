@@ -28,6 +28,7 @@ import {
   getValueOfExpression,
   isCallToFQN,
   isIdentifier,
+  resolveFromFunctionReference,
 } from './utils';
 
 export const rule: Rule.RuleModule = {
@@ -107,28 +108,12 @@ export const rule: Rule.RuleModule = {
         getValueOfExpression(context, node, 'FunctionExpression') ||
         getValueOfExpression(context, node, 'ArrowFunctionExpression');
       if (!assignedFunction && node.type === 'Identifier' && isRequiredParserServices(services)) {
-        assignedFunction = resolveFromFunctionReference(node);
+        assignedFunction = resolveFromFunctionReference(context, node);
       }
       if (!!assignedFunction) {
         return isEmptySanitizerFunction(assignedFunction);
       }
       return false;
-    }
-
-    function resolveFromFunctionReference(functionIdentifier: estree.Identifier) {
-      const reference = context
-        .getScope()
-        .references.find(ref => ref.identifier === functionIdentifier);
-      if (
-        reference &&
-        reference.resolved &&
-        reference.resolved.defs.length === 1 &&
-        reference.resolved.defs[0] &&
-        reference.resolved.defs[0].type === 'FunctionName'
-      ) {
-        return reference.resolved.defs[0].node;
-      }
-      return null;
     }
 
     return {
