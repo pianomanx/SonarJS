@@ -14,9 +14,16 @@
  * You should have received a copy of the Sonar Source-Available License
  * along with this program; if not, see https://sonarsource.com/license/ssal/
  */
-export const implementation = 'decorated';
-export const eslintId = 'no-unstable-nested-components';
-export const externalRules = [
-  { externalPlugin: 'react', externalRule: 'no-unstable-nested-components' },
-];
-export * from './config.js';
+// https://sonarsource.github.io/rspec/#/rspec/S6478/javascript
+
+import type { ESLintConfiguration } from '../helpers/configs.js';
+
+export const fields = [
+  [
+    {
+      field: 'allowAsProps',
+      default: false,
+      description: 'Allow React components defined inline when they are passed as props.',
+    },
+  ],
+] as const satisfies ESLintConfiguration;
