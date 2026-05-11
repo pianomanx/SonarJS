@@ -18,11 +18,11 @@ import type { PackageJson } from 'type-fest';
 import ts from 'typescript';
 import yaml from 'yaml';
 import { type File, normalizeToAbsolutePath, stripBOM } from '../files.js';
-import type { DenoManifest, Workspace } from './resolvers/types.js';
+import type { DenoJson, Workspace } from './resolvers/types.js';
 
 const parsedPackageJsonCache = new Map<string, PackageJson | undefined>();
 const parsedPnpmWorkspaceCache = new Map<string, Workspace | undefined>();
-const parsedDenoManifestCache = new Map<string, DenoManifest | undefined>();
+const parsedDenoManifestCache = new Map<string, DenoJson | undefined>();
 
 export function clearParsedDependencyFileCache(): void {
   parsedPackageJsonCache.clear();
@@ -85,11 +85,11 @@ function parsePnpmWorkspaceContent(file: File): Workspace | undefined {
   }
 }
 
-export function parseDenoManifest(file: File): DenoManifest | undefined {
+export function parseDenoManifest(file: File): DenoJson | undefined {
   return getOrSetParsedDependencyFile(parsedDenoManifestCache, file, parseDenoManifestContent);
 }
 
-function parseDenoManifestContent(file: File): DenoManifest | undefined {
+function parseDenoManifestContent(file: File): DenoJson | undefined {
   try {
     // ts.parseConfigFileTextToJson handles JSON with comments and trailing commas
     const parsed = ts.parseConfigFileTextToJson(file.path, stripBOM(file.content.toString()));
@@ -98,7 +98,7 @@ function parseDenoManifestContent(file: File): DenoManifest | undefined {
       console.debug(`Error parsing deno manifest ${file.path}: ${message}`);
       return;
     }
-    return parsed.config as DenoManifest;
+    return parsed.config as DenoJson;
   } catch (error) {
     console.debug(`Error parsing deno manifest ${file.path}: ${error}`);
     return;

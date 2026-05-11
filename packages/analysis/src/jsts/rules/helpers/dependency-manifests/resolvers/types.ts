@@ -15,9 +15,9 @@
  * along with this program; if not, see https://sonarsource.com/license/ssal/
  */
 import { Minimatch } from 'minimatch';
-import { PackageJson } from 'type-fest';
 import type { NormalizedAbsolutePath } from '../../files.js';
 import type { Filesystem } from '../../find-up/find-minimatch.js';
+import type { PackageJson } from 'type-fest';
 
 // https://developer.mozilla.org/en-US/docs/Web/HTML/Reference/Elements/script/type/importmap
 type ImportMap = Record<string, unknown>;
@@ -28,16 +28,25 @@ export type ModuleType = 'module' | 'commonjs';
 
 export const DEFINITELY_TYPED = '@types/';
 
-export type DenoManifest = {
+type PackageJsonManifest = {
+  type: 'package-json';
+  manifest: PackageJson;
+};
+
+export type DenoJson = {
   imports?: ImportMap;
   workspace?: string[] | { members?: string[] };
 };
 
-export interface DependencyManifest {
-  readonly type: 'package-json' | 'deno';
+type DenoManifest = {
+  type: 'deno';
+  manifest: DenoJson;
+};
+
+export type DependencyManifest = (PackageJsonManifest | DenoManifest) & {
   readonly dependencies: DependenciesList;
   readonly moduleType: ModuleType | undefined;
-}
+};
 
 /**
  * Strategy interface for resolving dependency manifests of a specific type from a single

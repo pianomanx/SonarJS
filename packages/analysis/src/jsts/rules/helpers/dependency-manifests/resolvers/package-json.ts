@@ -74,6 +74,7 @@ export const packageJsonManifestResolver: ManifestResolver = {
     return [
       {
         type: 'package-json',
+        manifest: parsedPackageJson,
         dependencies: buildDependencies(parsedPackageJson),
         moduleType,
       },
